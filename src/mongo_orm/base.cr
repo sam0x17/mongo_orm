@@ -2,7 +2,7 @@
 #require "./callbacks"
 #require "./fields"
 #require "./querying"
-#require "./settings"
+require "./settings"
 #require "./table"
 #require "./transactions"
 #require "./validators"
@@ -20,7 +20,7 @@ class Mongo::ORM::Base
   #include Associations
   #include Callbacks
   #include Fields
-  #include Settings
+  include Settings
   #include Table
   #include Transactions
   #include Validators

@@ -1,4 +1,4 @@
-module Granite::ORM::Settings
+module Mongo::ORM::Settings
   macro included
     macro inherited
       SETTINGS = {} of Nil => Nil
