@@ -1,0 +1,9 @@
+name: mongo-orm
+version: 0.1.0
+
+authors:
+  - Sam Johnson <sam@durosoft.com>
+
+crystal: 0.23.1
+
+license: MIT

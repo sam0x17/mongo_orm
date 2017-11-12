@@ -1,0 +1,2 @@
+#!/bin/bash
+crystal build src/mongo_orm.cr
