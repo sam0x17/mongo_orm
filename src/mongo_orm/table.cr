@@ -1,18 +1,13 @@
-module Granite::ORM::Table
+module Mongo::ORM::Table
   macro included
     macro inherited
-      PRIMARY = {name: id, type: Int64}
+      PRIMARY = {name: _id, type: String}
     end
   end
 
-  # specify the database adapter you will be using for this model.
-  # mysql, pg, sqlite, etc.
-  macro adapter(name)
-    @@adapter = Granite::Adapter::{{name.id.capitalize}}.new("{{name.id}}")
-
-    def self.adapter
-      @@adapter
-    end
+  @@adapter = Mongo::ORM::Adapter.new
+  def self.adapter
+    @@adapter
   end
 
   # specify the table name to use otherwise it will use the model's name
@@ -20,20 +15,24 @@ module Granite::ORM::Table
     {% SETTINGS[:table_name] = name.id %}
   end
 
-  # specify the primary key column and type
-  macro primary(decl)
-    {% PRIMARY[:name] = decl.var %}
-    {% PRIMARY[:type] = decl.type %}
-  end
-
   macro __process_table
     {% name_space = @type.name.gsub(/::/, "_").downcase.id %}
     {% table_name = SETTINGS[:table_name] || name_space + "s" %}
     {% primary_name = PRIMARY[:name] %}
     {% primary_type = PRIMARY[:type] %}
+
     # Table Name
     @@table_name = "{{table_name}}"
     @@primary_name = "{{primary_name}}"
+
+    # make accessible to outside classes
+    def self.table_name
+      @@table_name
+    end
+    def self.primary_name
+      @@primary_name
+    end
+
     # Create the primary key
     property {{primary_name}} : Union({{primary_type.id}} | Nil)
   end
