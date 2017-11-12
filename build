@@ -1,2 +1,3 @@
 #!/bin/bash
-crystal build src/mongo_orm.cr
+crystal build src/mongo_orm.cr || exit 1
+./mongo_orm
