@@ -1,6 +1,6 @@
 #require "./associations"
 #require "./callbacks"
-#require "./fields"
+require "./fields"
 #require "./querying"
 require "./settings"
 require "./table"
@@ -19,7 +19,7 @@ end
 class Mongo::ORM::Base
   #include Associations
   #include Callbacks
-  #include Fields
+  include Fields
   include Settings
   include Table
   #include Transactions
@@ -30,7 +30,7 @@ class Mongo::ORM::Base
   macro inherited
     macro finished
       __process_table
-      #__process_fields
+      __process_fields
       #__process_querying
       #__process_transactions
     end
