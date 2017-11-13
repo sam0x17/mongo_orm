@@ -3,7 +3,7 @@
 require "./fields"
 #require "./querying"
 require "./settings"
-require "./table"
+require "./collection"
 #require "./transactions"
 #require "./validators"
 require "./version"
@@ -21,7 +21,7 @@ class Mongo::ORM::Base
   #include Callbacks
   include Fields
   include Settings
-  include Table
+  include Collection
   #include Transactions
   #include Validators
 
@@ -29,7 +29,7 @@ class Mongo::ORM::Base
 
   macro inherited
     macro finished
-      __process_table
+      __process_collection
       __process_fields
       #__process_querying
       #__process_transactions
@@ -48,10 +48,10 @@ class Mongo::ORM::Base
   end
 
   def self.adapter
-    Mongo::ORM::Table.adapter
+    Mongo::ORM::Collection.adapter
   end
 
   def self.db
-    Mongo::ORM::Table.db
+    Mongo::ORM::Collection.db
   end
 end

@@ -23,21 +23,21 @@ module Granite::ORM::Querying
     end
   end
 
-  # Clear is used to remove all rows from the table and reset the counter for
+  # Clear is used to remove all rows from the collection and reset the counter for
   # the primary key.
   def clear
-    @@adapter.clear @@table_name
+    @@adapter.clear @@collection_name
   end
 
   # All will return all rows in the database. The clause allows you to specify
   # a WHERE, JOIN, GROUP BY, ORDER BY and any other SQL92 compatible query to
-  # your table.  The results will be an array of instantiated instances of
+  # your collection.  The results will be an array of instantiated instances of
   # your Model class.  This allows you to take full advantage of the database
   # that you are using so you are not restricted or dummied down to support a
   # DSL.
   def all(clause = "", params = [] of DB::Any)
     rows = [] of self
-    @@adapter.select(@@table_name, fields([@@primary_name]), clause, params) do |results|
+    @@adapter.select(@@collection_name, fields([@@primary_name]), clause, params) do |results|
       results.each do
         rows << from_sql(results)
       end
@@ -65,7 +65,7 @@ module Granite::ORM::Querying
   # find_by returns the first row found where the field maches the value
   def find_by(field : String, value)
     row = nil
-    @@adapter.select_one(@@table_name, fields([@@primary_name]), field, value) do |result|
+    @@adapter.select_one(@@collection_name, fields([@@primary_name]), field, value) do |result|
       row = from_sql(result) if result
     end
     return row

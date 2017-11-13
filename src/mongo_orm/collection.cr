@@ -1,4 +1,4 @@
-module Mongo::ORM::Table
+module Mongo::ORM::Collection
   macro included
     macro inherited
       PRIMARY = {name: _id, type: String}
@@ -14,35 +14,35 @@ module Mongo::ORM::Table
     @@adapter.database
   end
 
-  # specify the table name to use otherwise it will use the model's name
-  macro table_name(name)
-    {% SETTINGS[:table_name] = name.id %}
+  # specify the collection name to use otherwise it will use the model's name
+  macro collection_name(name)
+    {% SETTINGS[:collection_name] = name.id %}
   end
 
-  macro __process_table
+  macro __process_collection
     {% name_space = @type.name.gsub(/::/, "_").downcase.id %}
-    {% table_name = SETTINGS[:table_name] || name_space + "s" %}
+    {% collection_name = SETTINGS[:collection_name] || name_space + "s" %}
     {% primary_name = PRIMARY[:name] %}
     {% primary_type = PRIMARY[:type] %}
 
-    # Table Name
-    @@table_name = "{{table_name}}"
+    # Collection Name
+    @@collection_name = "{{collection_name}}"
     @@primary_name = "{{primary_name}}"
 
     # make accessible to outside classes
-    def self.table_name
-      @@table_name
+    def self.collection_name
+      @@collection_name
     end
     def self.primary_name
       @@primary_name
     end
 
     def self.adapter
-      Mongo::ORM::Table.adapter
+      Mongo::ORM::Collection.adapter
     end
 
     def self.db
-      Mongo::ORM::Table.db
+      Mongo::ORM::Collection.db
     end
 
     # Create the primary key

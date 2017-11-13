@@ -14,16 +14,16 @@ module Granite::ORM::Transactions
           @updated_at = Time.now
           params_and_pk = params
           params_and_pk << value
-          @@adapter.update @@table_name, @@primary_name, self.class.fields, params_and_pk
+          @@adapter.update @@collection_name, @@primary_name, self.class.fields, params_and_pk
           __run_after_update
         else
           __run_before_create
           @created_at = Time.now
           @updated_at = Time.now
           {% if primary_type.id == "Int32" %}
-            @{{primary_name}} = @@adapter.insert(@@table_name, self.class.fields, params).to_i32
+            @{{primary_name}} = @@adapter.insert(@@collection_name, self.class.fields, params).to_i32
           {% else %}
-            @{{primary_name}} = @@adapter.insert(@@table_name, self.class.fields, params)
+            @{{primary_name}} = @@adapter.insert(@@collection_name, self.class.fields, params)
           {% end %}
           __run_after_create
         end
@@ -42,7 +42,7 @@ module Granite::ORM::Transactions
     def destroy
       begin
         __run_before_destroy
-        @@adapter.delete(@@table_name, @@primary_name, {{primary_name}})
+        @@adapter.delete(@@collection_name, @@primary_name, {{primary_name}})
         __run_after_destroy
         return true
       rescue ex

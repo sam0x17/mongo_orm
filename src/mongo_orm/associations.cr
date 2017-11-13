@@ -18,27 +18,27 @@ module Granite::ORM::Associations
     end
   end
 
-  macro has_many(children_table)
-    def {{children_table.id}}
-      {% children_class = children_table.id[0...-1].camelcase %}
+  macro has_many(children_collection)
+    def {{children_collection.id}}
+      {% children_class = children_collection.id[0...-1].camelcase %}
       {% name_space = @type.name.gsub(/::/, "_").downcase.id %}
-      {% table_name = SETTINGS[:table_name] || name_space + "s" %}
+      {% collection_name = SETTINGS[:collection_name] || name_space + "s" %}
       return [] of {{children_class}} unless id
-      foreign_key = "{{children_table.id}}.{{table_name[0...-1]}}_id"
+      foreign_key = "{{children_collection.id}}.{{collection_name[0...-1]}}_id"
       query = "WHERE #{foreign_key} = ?"
       {{children_class}}.all(query, id)
     end
   end
-  
+
   # define getter for related children
-  macro has_many(children_table, through)
-    def {{children_table.id}}
-      {% children_class = children_table.id[0...-1].camelcase %}
+  macro has_many(children_collection, through)
+    def {{children_collection.id}}
+      {% children_class = children_collection.id[0...-1].camelcase %}
       {% name_space = @type.name.gsub(/::/, "_").downcase.id %}
-      {% table_name = SETTINGS[:table_name] || name_space + "s" %}
+      {% collection_name = SETTINGS[:collection_name] || name_space + "s" %}
       return [] of {{children_class}} unless id
-      query = "JOIN {{through.id}} ON {{through.id}}.{{children_table.id[0...-1]}}_id = {{children_table.id}}.id "
-      query = query + "WHERE {{through.id}}.{{table_name[0...-1]}}_id = ?"
+      query = "JOIN {{through.id}} ON {{through.id}}.{{children_collection.id[0...-1]}}_id = {{children_collection.id}}.id "
+      query = query + "WHERE {{through.id}}.{{collection_name[0...-1]}}_id = ?"
       {{children_class}}.all(query, id)
     end
   end
