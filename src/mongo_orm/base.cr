@@ -8,8 +8,14 @@ require "./collection"
 #require "./validators"
 require "./version"
 
+struct BSON::ObjectId # ObjectId.inspect should just display id
+  def inspect(io)
+    io << to_s
+  end
+end
+
 module DB # needed for fields support
-  TYPES = [Nil, String, Bool, Int32, Int64, Float32, Float64, Time, Bytes]
+  TYPES = [Nil, String, Bool, Int32, Int64, Float32, Float64, Time, Bytes, BSON::ObjectId]
   {% begin %}
     alias Any = Union({{*TYPES}})
   {% end %}
@@ -33,6 +39,14 @@ class Mongo::ORM::Base
       __process_fields
       #__process_querying
       #__process_transactions
+
+      def inspect(io)
+        st = " @id=#{id}"
+        fields.each do |field_name, field_value|
+          st += " @#{field_name}=#{field_value}" unless field_name == "id"
+        end
+        io << self.to_s.gsub(">", "#{st}>")
+      end
     end
   end
 

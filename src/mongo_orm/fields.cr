@@ -42,6 +42,19 @@ module Mongo::ORM::Fields
       return fields
     end
 
+    # keep a hash of the fields to be used for mapping
+    def fields(fields = {} of String => Type | Nil)
+      {% for name, type in FIELDS %}
+        fields["{{name.id}}"] = self.{{name.id}}
+      {% end %}
+      {% if SETTINGS[:timestamps] %}
+        fields["created_at"] = self.created_at
+        fields["updated_at"] = self.updated_at
+      {% end %}
+      fields["id"] = self.id
+      return fields
+    end
+
     # keep a hash of the params that will be passed to the adapter.
     def params
       parsed_params = [] of DB::Any

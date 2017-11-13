@@ -1,7 +1,7 @@
 module Mongo::ORM::Collection
   macro included
     macro inherited
-      PRIMARY = {name: _id, type: String}
+      PRIMARY = {name: _id, type: BSON::ObjectId}
     end
   end
 
@@ -43,6 +43,18 @@ module Mongo::ORM::Collection
 
     def self.db
       Mongo::ORM::Collection.db
+    end
+
+    def id
+      _id
+    end
+
+    def id=(value : BSON::ObjectId | String)
+      if value.is_a?(String)
+        _id = BSON::ObjectId.from_string(value)
+      else
+        _id = value
+      end
     end
 
     # Create the primary key
