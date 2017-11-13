@@ -10,6 +10,10 @@ module Mongo::ORM::Table
     @@adapter
   end
 
+  def self.db
+    @@adapter.database
+  end
+
   # specify the table name to use otherwise it will use the model's name
   macro table_name(name)
     {% SETTINGS[:table_name] = name.id %}
@@ -31,6 +35,14 @@ module Mongo::ORM::Table
     end
     def self.primary_name
       @@primary_name
+    end
+
+    def self.adapter
+      Mongo::ORM::Table.adapter
+    end
+
+    def self.db
+      Mongo::ORM::Table.db
     end
 
     # Create the primary key

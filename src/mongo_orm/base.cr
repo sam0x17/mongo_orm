@@ -46,4 +46,12 @@ class Mongo::ORM::Base
 
   def initialize
   end
+
+  def self.adapter
+    Mongo::ORM::Table.adapter
+  end
+
+  def self.db
+    Mongo::ORM::Table.db
+  end
 end
