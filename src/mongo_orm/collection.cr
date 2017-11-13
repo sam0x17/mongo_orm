@@ -36,6 +36,9 @@ module Mongo::ORM::Collection
     def self.primary_name
       @@primary_name
     end
+    def self.collection
+      Mongo::ORM::Collection.db[@@collection_name]
+    end
 
     def self.adapter
       Mongo::ORM::Collection.adapter

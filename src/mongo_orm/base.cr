@@ -1,7 +1,7 @@
 #require "./associations"
 #require "./callbacks"
 require "./fields"
-#require "./querying"
+require "./querying"
 require "./settings"
 require "./collection"
 #require "./transactions"
@@ -31,19 +31,19 @@ class Mongo::ORM::Base
   #include Transactions
   #include Validators
 
-  #extend Querying
+  extend Querying
 
   macro inherited
     macro finished
       __process_collection
       __process_fields
-      #__process_querying
+      __process_querying
       #__process_transactions
 
       def inspect(io)
-        st = " @id=#{id}"
+        st = " @id=#{id || "nil"}"
         fields.each do |field_name, field_value|
-          st += " @#{field_name}=#{field_value}" unless field_name == "id"
+          st += " @#{field_name}=#{field_value || "nil"}" unless field_name == "id"
         end
         io << self.to_s.gsub(">", "#{st}>")
       end

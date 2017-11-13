@@ -1,86 +1,63 @@
-module Granite::ORM::Querying
+module Mongo::ORM::Querying
   macro extended
     macro __process_querying
       \{% primary_name = PRIMARY[:name] %}
       \{% primary_type = PRIMARY[:type] %}
 
-      # Create the from_sql method
-      def self.from_sql(result)
+      def self.from_bson(bson)
         model = \{{@type.name.id}}.new
-
-        model.\{{primary_name}} = result.read(\{{primary_type}})
-
+        model._id = bson["_id"].as(BSON::ObjectId)
         \{% for name, type in FIELDS %}
-          model.\{{name.id}} = result.read(Union(\{{type.id}} | Nil))
+          model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
         \{% end %}
-
         \{% if SETTINGS[:timestamps] %}
-          model.created_at = result.read(Union(Time | Nil))
-          model.updated_at = result.read(Union(Time | Nil))
+          model.created_at = bson["created_at"].as(Union(Time | Nil))
+          model.updated_at = bson["updated_at"].as(Union(Time | Nil))
         \{% end %}
-        return model
+        model
       end
     end
   end
 
-  # Clear is used to remove all rows from the collection and reset the counter for
-  # the primary key.
   def clear
-    @@adapter.clear @@collection_name
+    collection.drop
   end
 
-  # All will return all rows in the database. The clause allows you to specify
-  # a WHERE, JOIN, GROUP BY, ORDER BY and any other SQL92 compatible query to
-  # your collection.  The results will be an array of instantiated instances of
-  # your Model class.  This allows you to take full advantage of the database
-  # that you are using so you are not restricted or dummied down to support a
-  # DSL.
-  def all(clause = "", params = [] of DB::Any)
+  def all(query = "", skip = 0, limit = 0, batch_size = 0, flags = LibMongoC::QueryFlags::NONE, prefs = nil)
     rows = [] of self
-    @@adapter.select(@@collection_name, fields([@@primary_name]), clause, params) do |results|
-      results.each do
-        rows << from_sql(results)
-      end
+    collection.find(query, BSON.new, flags, skip, limit, batch_size, prefs).each do |doc|
+      rows << from_bson(doc)
     end
-    return rows
+    rows
   end
 
-  # First adds a `LIMIT 1` clause to the query and returns the first result
-  def first(clause = "", params = [] of DB::Any)
-    all([clause.strip, "LIMIT 1"].join(" "), params).first?
+  def all_batches(query = "", batch_size = 100)
+    collection.find(query, BSON.new, LibMongoC::QueryFlags::NONE, 0, 0, batch_size, nil).each do |doc|
+      yield from_bson(doc)
+    end
   end
 
-  # find returns the row with the primary key specified.
-  # it checks by primary by default, but one can pass
-  # another field for comparison
+  def first(query = "")
+    all(query, 0, 1).first?
+  end
+
   def find(value)
-    return find_by(@@primary_name, value)
+    return find_by(@@primary_name.to_s, value)
   end
 
   # find_by using symbol for field name.
   def find_by(field : Symbol, value)
-    find_by(field.to_s, value)
+    field = :_id if field == :id
+    find_by(field.to_s, value)  # find_by using symbol for field name.
   end
 
   # find_by returns the first row found where the field maches the value
   def find_by(field : String, value)
     row = nil
-    @@adapter.select_one(@@collection_name, fields([@@primary_name]), field, value) do |result|
-      row = from_sql(result) if result
+    collection.find({ field => value }, BSON.new, LibMongoC::QueryFlags::NONE, 0, 1) do |doc|
+      row = from_bson(doc)
     end
-    return row
-  end
-
-  def exec(clause = "")
-    @@adapter.open { |db| db.exec(clause) }
-  end
-
-  def query(clause = "", params = [] of DB::Any, &block)
-    @@adapter.open { |db| yield db.query(clause, params) }
-  end
-
-  def scalar(clause = "", &block)
-    @@adapter.open { |db| yield db.scalar(clause) }
+    row
   end
 
   def create(**args)
