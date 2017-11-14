@@ -1,5 +1,5 @@
 #require "./associations"
-#require "./callbacks"
+require "./callbacks"
 require "./fields"
 require "./querying"
 require "./settings"
@@ -24,7 +24,7 @@ end
 # Mongo::ORM::Base is the base class for your model objects.
 class Mongo::ORM::Base
   #include Associations
-  #include Callbacks
+  include Callbacks
   include Fields
   include Settings
   include Collection

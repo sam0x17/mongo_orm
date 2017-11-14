@@ -1,4 +1,4 @@
-module Granite::ORM::Callbacks
+module Mongo::ORM::Callbacks
   CALLBACK_NAMES = %i(before_save after_save before_create after_create before_update after_update before_destroy after_destroy)
 
   macro included
