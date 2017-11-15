@@ -23,7 +23,7 @@ module Mongo::ORM::Querying
     collection.drop
   end
 
-  def all(query = "", skip = 0, limit = 0, batch_size = 0, flags = LibMongoC::QueryFlags::NONE, prefs = nil)
+  def all(query = BSON.new, skip = 0, limit = 0, batch_size = 0, flags = LibMongoC::QueryFlags::NONE, prefs = nil)
     rows = [] of self
     collection.find(query, BSON.new, flags, skip, limit, batch_size, prefs).each do |doc|
       rows << from_bson(doc)
@@ -31,13 +31,13 @@ module Mongo::ORM::Querying
     rows
   end
 
-  def all_batches(query = "", batch_size = 100)
+  def all_batches(query = BSON.new, batch_size = 100)
     collection.find(query, BSON.new, LibMongoC::QueryFlags::NONE, 0, 0, batch_size, nil).each do |doc|
       yield from_bson(doc)
     end
   end
 
-  def first(query = "")
+  def first(query = BSON.new)
     all(query, 0, 1).first?
   end
 
