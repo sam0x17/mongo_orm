@@ -6,20 +6,20 @@ module Mongo::ORM::Querying
 
       def self.from_bson(bson)
         model = \{{@type.name.id}}.new
-        model._id = bson["_id"].as(BSON::ObjectId)
+        model._id = bson["_id"].as(BSON::ObjectId) if bson["_id"]?
         \{% for name, type in FIELDS %}
           model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
         \{% end %}
         \{% if SETTINGS[:timestamps] %}
-          model.created_at = bson["created_at"].as(Union(Time | Nil))
-          model.updated_at = bson["updated_at"].as(Union(Time | Nil))
+          model.created_at = bson["created_at"].as(Union(Time | Nil)) if bson["created_at"]?
+          model.updated_at = bson["updated_at"].as(Union(Time | Nil)) if bson["updated_at"]?
         \{% end %}
         model
       end
 
       def to_bson
         bson = BSON.new
-        bson["_id"] = _id
+        bson["_id"] = _id  if _id != nil
         \{% for name, type in FIELDS %}
           bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
         \{% end %}

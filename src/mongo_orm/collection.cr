@@ -48,16 +48,16 @@ module Mongo::ORM::Collection
       Mongo::ORM::Collection.db
     end
 
+    def _id=(value : String)
+      self._id = BSON::ObjectId.new value
+    end
+
     def id
       _id
     end
 
-    def id=(value : BSON::ObjectId | String)
-      if value.is_a?(String)
-        _id = BSON::ObjectId.from_string(value)
-      else
-        _id = value
-      end
+    def id=(value : String | Nil | BSON::ObjectId)
+      self._id = value
     end
 
     # Create the primary key

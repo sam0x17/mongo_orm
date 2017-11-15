@@ -51,7 +51,7 @@ module Mongo::ORM::Fields
         fields["created_at"] = self.created_at
         fields["updated_at"] = self.updated_at
       {% end %}
-      fields["id"] = self.id
+      fields["_id"] = self._id
       return fields
     end
 
