@@ -41,11 +41,17 @@ class Mongo::ORM::Base
       #__process_transactions
 
       def inspect(io)
-        st = " @_id=#{_id || "nil"}"
+        sts = [] of String
+        sts << "_id: #{"'#{_id}'" || "nil"}"
         fields.each do |field_name, field_value|
-          st += " @#{field_name}=#{field_value || "nil"}" unless field_name == "_id"
+          next if field_name == "_id"
+          if field_value.is_a?(Number)
+            sts << " #{field_name}: #{field_value}"
+          else
+            sts << " #{field_name}: #{"'#{field_value}'" || "nil"}"
+          end
         end
-        io << self.to_s.gsub(">", "#{st}>")
+        io << "#{self.class} {#{sts.join(",")}}"
       end
     end
   end
