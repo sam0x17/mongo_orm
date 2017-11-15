@@ -1,5 +1,5 @@
-module Granite::ORM::Transactions
-  macro __process_transactions
+module Mongo::ORM::Persistence
+  macro __process_persistence
     {% primary_name = PRIMARY[:name] %}
     {% primary_type = PRIMARY[:type] %}
 
