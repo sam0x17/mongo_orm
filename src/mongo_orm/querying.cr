@@ -16,6 +16,19 @@ module Mongo::ORM::Querying
         \{% end %}
         model
       end
+
+      def to_bson
+        bson = BSON.new
+        bson["_id"] = _id
+        \{% for name, type in FIELDS %}
+          bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
+        \{% end %}
+        \{% if SETTINGS[:timestamps] %}
+          bson["created_at"] = created_at.as(Union(Time | Nil))
+          bson["updated_at"] = updated_at.as(Union(Time | Nil))
+        \{% end %}
+        bson
+      end
     end
   end
 
