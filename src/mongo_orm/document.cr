@@ -23,8 +23,8 @@ module DB # needed for fields support
   {% end %}
 end
 
-# Mongo::ORM::Base is the base class for your model objects.
-class Mongo::ORM::Base
+# Mongo::ORM::Document is the base class for your model objects.
+class Mongo::ORM::Document
   include Associations
   include Callbacks
   include Fields
