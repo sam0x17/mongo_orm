@@ -4,8 +4,9 @@ require "./fields"
 require "./querying"
 require "./settings"
 require "./collection"
-#require "./transactions"
-#require "./validators"
+require "./persistence"
+require "./error"
+require "./validators"
 require "./version"
 
 struct BSON::ObjectId # ObjectId.inspect should just display id
@@ -28,17 +29,23 @@ class Mongo::ORM::Base
   include Fields
   include Settings
   include Collection
-  #include Transactions
-  #include Validators
+  include Persistence
+  include Validators
 
   extend Querying
+
+  @errors = [] of Mongo::ORM::Error
+
+  def errors
+    @errors
+  end
 
   macro inherited
     macro finished
       __process_collection
       __process_fields
       __process_querying
-      #__process_transactions
+      __process_persistence
 
       def inspect(io)
         sts = [] of String
@@ -65,13 +72,5 @@ class Mongo::ORM::Base
   end
 
   def initialize
-  end
-
-  def self.adapter
-    Mongo::ORM::Collection.adapter
-  end
-
-  def self.db
-    Mongo::ORM::Collection.db
   end
 end

@@ -1,4 +1,4 @@
-class Granite::ORM::Error
+class Mongo::ORM::Error
   property field, message
 
   def initialize(@field : Symbol, @message : String)

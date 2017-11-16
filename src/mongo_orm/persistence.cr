@@ -9,30 +9,27 @@ module Mongo::ORM::Persistence
     def save
       begin
         __run_before_save
-        if value = @{{primary_name}}
+        if _id
           __run_before_update
           @updated_at = Time.now
-          params_and_pk = params
-          params_and_pk << value
-          @@adapter.update @@collection_name, @@primary_name, self.class.fields, params_and_pk
+          @@collection.save(to_bson)
           __run_after_update
         else
           __run_before_create
           @created_at = Time.now
           @updated_at = Time.now
-          {% if primary_type.id == "Int32" %}
-            @{{primary_name}} = @@adapter.insert(@@collection_name, self.class.fields, params).to_i32
-          {% else %}
-            @{{primary_name}} = @@adapter.insert(@@collection_name, self.class.fields, params)
-          {% end %}
+          self._id = BSON::ObjectId.new
+          @@collection.save(to_bson)
           __run_after_create
         end
         __run_after_save
         return true
       rescue ex
         if message = ex.message
-          puts "Save Exception: #{message}"
-          errors << Granite::ORM::Error.new(:base, message)
+          puts "Save Exception:"
+          puts "  Message: '#{message}'"
+          puts "  Object: #{self.inspect}"
+          @errors << Mongo::ORM::Error.new(:base, message)
         end
         return false
       end

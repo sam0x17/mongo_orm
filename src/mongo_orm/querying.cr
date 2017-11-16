@@ -19,7 +19,7 @@ module Mongo::ORM::Querying
 
       def to_bson
         bson = BSON.new
-        bson["_id"] = _id  if _id != nil
+        bson["_id"] = self._id  if self._id != nil
         \{% for name, type in FIELDS %}
           bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
         \{% end %}

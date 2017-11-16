@@ -28,6 +28,7 @@ module Mongo::ORM::Collection
     # Collection Name
     @@collection_name = "{{collection_name}}"
     @@primary_name = "{{primary_name}}"
+    @@collection : Mongo::Collection = Mongo::ORM::Collection.db[@@collection_name]
 
     # make accessible to outside classes
     def self.collection_name
@@ -37,7 +38,7 @@ module Mongo::ORM::Collection
       @@primary_name
     end
     def self.collection
-      Mongo::ORM::Collection.db[@@collection_name]
+      @@collection
     end
 
     def self.adapter
