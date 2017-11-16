@@ -8,6 +8,7 @@ require "./persistence"
 require "./error"
 require "./validators"
 require "./version"
+require "./associations"
 
 struct BSON::ObjectId # ObjectId.inspect should just display id
   def inspect(io)
@@ -24,7 +25,7 @@ end
 
 # Mongo::ORM::Base is the base class for your model objects.
 class Mongo::ORM::Base
-  #include Associations
+  include Associations
   include Callbacks
   include Fields
   include Settings
