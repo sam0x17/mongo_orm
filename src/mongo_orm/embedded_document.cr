@@ -1,6 +1,8 @@
 require "./embedded_fields"
+require "./associations"
 class Mongo::ORM::EmbeddedDocument
   include EmbeddedFields
+  include Associations
 
   macro inherited
     macro finished
