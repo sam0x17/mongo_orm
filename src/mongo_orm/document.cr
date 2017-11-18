@@ -1,4 +1,3 @@
-#require "./associations"
 require "./callbacks"
 require "./fields"
 require "./querying"
