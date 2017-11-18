@@ -1,6 +1,6 @@
 require "json"
 
-module Mongo::ORM::Fields
+module Mongo::ORM::EmbeddedFields
   alias Type = JSON::Type | DB::Any
   TIME_FORMAT_REGEX = /\d{4,}-\d{2,}-\d{2,}\s\d{2,}:\d{2,}:\d{2,}/
 
@@ -25,24 +25,16 @@ module Mongo::ORM::Fields
     {% SETTINGS[:timestamps] = true %}
   end
 
-  macro __process_fields
+  macro __process_embedded_fields
     # Create the properties
     {% for name, type in FIELDS %}
       property {{name.id}} : Union({{type.id}} | Nil)
-    {% end %}
-    {% if SETTINGS[:timestamps] %}
-      property created_at : Time?
-      property updated_at : Time?
     {% end %}
 
     # keep a hash of the fields to be used for mapping
     def self.fields(fields = [] of String)
       {% for name, type in FIELDS %}
         fields << "{{name.id}}"
-      {% end %}
-      {% if SETTINGS[:timestamps] %}
-        fields << "created_at"
-        fields << "updated_at"
       {% end %}
       return fields
     end
@@ -52,11 +44,6 @@ module Mongo::ORM::Fields
       {% for name, type in FIELDS %}
         fields["{{name.id}}"] = self.{{name.id}}
       {% end %}
-      {% if SETTINGS[:timestamps] %}
-        fields["created_at"] = self.created_at
-        fields["updated_at"] = self.updated_at
-      {% end %}
-      fields["_id"] = self._id
       return fields
     end
 
@@ -70,17 +57,11 @@ module Mongo::ORM::Fields
           parsed_params << {{name.id}}
         {% end %}
       {% end %}
-      {% if SETTINGS[:timestamps] %}
-        parsed_params << created_at.not_nil!.to_s("%F %X")
-        parsed_params << updated_at.not_nil!.to_s("%F %X")
-      {% end %}
       return parsed_params
     end
 
     def to_h
       fields = {} of String => DB::Any
-
-      fields["{{PRIMARY[:name]}}"] = {{PRIMARY[:name]}}
 
       {% for name, type in FIELDS %}
         {% if type.id == Time.id %}
@@ -91,18 +72,12 @@ module Mongo::ORM::Fields
           fields["{{name}}"] = {{name.id}}
         {% end %}
       {% end %}
-      {% if SETTINGS[:timestamps] %}
-        fields["created_at"] = created_at.try(&.to_s("%F %X"))
-        fields["updated_at"] = updated_at.try(&.to_s("%F %X"))
-      {% end %}
 
       return fields
     end
 
     def to_json(json : JSON::Builder)
       json.object do
-        json.field "{{PRIMARY[:name]}}", {{PRIMARY[:name]}}
-
         {% for name, type in FIELDS %}
           %field, %value = "{{name.id}}", {{name.id}}
           {% if type.id == Time.id %}
@@ -112,11 +87,6 @@ module Mongo::ORM::Fields
           {% else %}
             json.field %field, %value
           {% end %}
-        {% end %}
-
-        {% if SETTINGS[:timestamps] %}
-          json.field "created_at", created_at.try(&.to_s("%F %X"))
-          json.field "updated_at", updated_at.try(&.to_s("%F %X"))
         {% end %}
       end
     end
