@@ -1,12 +1,16 @@
 require "./embedded_fields"
 require "./associations"
+require "./embedded_bson"
+
 class Mongo::ORM::EmbeddedDocument
   include EmbeddedFields
   include Associations
+  extend EmbeddedBson
 
   macro inherited
     macro finished
       __process_embedded_fields
+      __process_embedded_bson
 
       def inspect(io)
         sts = [] of String
