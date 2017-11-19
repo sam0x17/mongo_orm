@@ -1,4 +1,4 @@
-class Mongo::ORM::Error < Exception
+class Mongo::ORM::Error
   property field, message
 
   def initialize(@field : Symbol, @message : String)
