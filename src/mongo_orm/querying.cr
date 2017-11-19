@@ -1,14 +1,24 @@
+class Object
+  def from_bson(val)
+    nil
+  end
+end
+
 module Mongo::ORM::Querying
   macro extended
     macro __process_querying
       \{% primary_name = PRIMARY[:name] %}
       \{% primary_type = PRIMARY[:type] %}
 
-      def self.from_bson(bson)
+      def self.from_bson(bson : BSON)
         model = \{{@type.name.id}}.new
         model._id = bson["_id"].as(BSON::ObjectId) if bson["_id"]?
         \{% for name, type in FIELDS %}
-          model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
+          if \{{type.id}}.is_a? Mongo::ORM::EmbeddedDocument.class
+            model.\{{name.id}} = \{{type.id}}.from_bson(bson["\{{name}}"])
+          else
+            model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
+          end
         \{% end %}
         \{% if SETTINGS[:timestamps] %}
           model.created_at = bson["created_at"].as(Union(Time | Nil)) if bson["created_at"]?

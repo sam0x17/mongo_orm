@@ -8,10 +8,14 @@ module Mongo::ORM::EmbeddedBson
   macro extended
     macro __process_embedded_bson
 
-      def self.from_bson(bson)
+      def self.from_bson(bson : BSON)
         model = \{{@type.name.id}}.new
         \{% for name, type in FIELDS %}
-          model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
+          if \{{type.id}}.is_a? Mongo::ORM::EmbeddedDocument.class
+            model.\{{name.id}} = \{{type.id}}.from_bson(bson["\{{name}}"])
+          else
+            model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
+          end
         \{% end %}
         model
       end

@@ -7,11 +7,14 @@ class Mongo::ORM::EmbeddedDocument
   include Associations
   extend EmbeddedBson
 
+  def equals?(val : Document)
+    self.to_h.to_s == val.to_h.to_s
+  end
+
   macro inherited
     macro finished
       __process_embedded_fields
       __process_embedded_bson
-
       def inspect(io)
         sts = [] of String
         fields.each do |field_name, field_value|
