@@ -71,6 +71,10 @@ class Mongo::ORM::Document
   def initialize
   end
 
+  def self.drop
+    clear
+  end
+
   def equals?(val : Document)
     self.to_h.to_s == val.to_h.to_s
   end

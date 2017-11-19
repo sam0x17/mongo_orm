@@ -43,7 +43,10 @@ module Mongo::ORM::Querying
   end
 
   def clear
-    collection.drop
+    begin
+      collection.drop
+    rescue
+    end
   end
 
   def all(query = BSON.new, skip = 0, limit = 0, batch_size = 0, flags = LibMongoC::QueryFlags::NONE, prefs = nil)
