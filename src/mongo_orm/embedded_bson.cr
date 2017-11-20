@@ -16,6 +16,9 @@ module Mongo::ORM::EmbeddedBson
           else
             model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
           end
+          \{% if type.id == Time %}
+            model.\{{name.id}} = model.\{{name.id}}.not_nil!.to_utc if model.\{{name.id}}
+          \{% end %}
         \{% end %}
         model
       end

@@ -19,10 +19,15 @@ module Mongo::ORM::Querying
           else
             model.\{{name.id}} = bson["\{{name}}"].as(Union(\{{type.id}} | Nil))
           end
+          \{% if type.id == Time %}
+            model.\{{name.id}} = model.\{{name.id}}.not_nil!.to_utc if model.\{{name.id}}
+          \{% end %}
         \{% end %}
         \{% if SETTINGS[:timestamps] %}
           model.created_at = bson["created_at"].as(Union(Time | Nil)) if bson["created_at"]?
           model.updated_at = bson["updated_at"].as(Union(Time | Nil)) if bson["updated_at"]?
+          model.created_at = model.created_at.not_nil!.to_utc if model.created_at
+          model.updated_at = model.updated_at.not_nil!.to_utc if model.updated_at
         \{% end %}
         model
       end

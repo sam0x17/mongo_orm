@@ -149,9 +149,9 @@ module Mongo::ORM::Fields
             @{{_name.id}} = ["1", "yes", "true", true].includes?(value)
           {% elsif type.id == Time.id %}
             if value.is_a?(Time)
-               @{{_name.id}} = value
+               @{{_name.id}} = value.to_utc
              elsif value.to_s =~ TIME_FORMAT_REGEX
-               @{{_name.id}} = Time.parse(value.to_s, "%F %X")
+               @{{_name.id}} = Time.parse(value.to_s, "%F %X").to_utc
              end
           {% else %}
             @{{_name.id}} = value.to_s
