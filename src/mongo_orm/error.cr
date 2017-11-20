@@ -1,14 +1,12 @@
-class Mongo::ORM::Error
-  property field, message
+class Mongo::ORM::Error < Exception
+  property field : Symbol
+  property raw_message : String
 
-  def initialize(@field : Symbol, @message : String)
-  end
-
-  def to_s
+  def initialize(@field, @raw_message)
     if @field == :base
-      @message
+      super(@raw_message)
     else
-      "#{@field.to_s.capitalize} #{message}"
+      super("#{@field.to_s.capitalize} #{@raw_message}")
     end
   end
 end
