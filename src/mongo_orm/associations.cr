@@ -22,7 +22,7 @@ module Mongo::ORM::Associations
     def {{children_collection.id}}
       {% children_class = children_collection.id[0...-1].camelcase %}
       return [] of {{children_class}} unless self._id
-      {{children_class}}.all({"_id" => self._id})
+      {{children_class}}.all({"#{self.class.to_s.underscore}_id" => self._id})
     end
   end
 end

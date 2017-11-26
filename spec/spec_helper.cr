@@ -16,6 +16,11 @@ class TestBlog < Mongo::ORM::EmbeddedDocument
   embeds thing : TestInnerThing
 end
 
+class TestPost < Mongo::ORM::Document
+  field text : String
+  belongs_to :test_admin
+end
+
 class TestInnerThing < Mongo::ORM::EmbeddedDocument
   field name : String
 end
@@ -25,15 +30,19 @@ class TestAdmin < Mongo::ORM::Document
   field last_name : String
   field age : Int32
   embeds blog : TestBlog
+  has_many :test_posts
+
   timestamps
 end
 
 Spec.before_each do
   TestUser.drop
   TestAdmin.drop
+  TestPost.drop
 end
 
 Spec.after_each do
   TestUser.drop
   TestAdmin.drop
+  TestPost.drop
 end
