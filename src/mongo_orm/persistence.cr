@@ -1,6 +1,9 @@
 module Mongo::ORM::Persistence
   macro __process_persistence
 
+    @updated_at : Time | Nil
+    @created_at : Time | Nil
+
     # The save method will check to see if the primary exists yet. If it does it
     # will call the update method, otherwise it will call the create method.
     # This will update the timestamps apropriately.
