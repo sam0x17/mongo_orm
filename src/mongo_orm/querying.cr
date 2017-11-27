@@ -13,6 +13,17 @@ module Mongo::ORM::Querying
       def self.from_bson(bson : BSON)
         model = \{{@type.name.id}}.new
         model._id = bson["_id"].as(BSON::ObjectId) if bson["_id"]?
+        \{% for name, type in SPECIAL_FIELDS %}
+          model.\{{name.id}} = [] of \{{type.id}}
+          if bson.has_key?("\{{name}}")
+            bson["\{{name}}"].not_nil!.as(BSON).each do |item|
+              loaded = \{{type.id}}.from_bson(item.value)
+              model.\{{name.id}} << loaded unless loaded.nil?
+            end
+          else
+            raise "missing bson key: \{{name}}"
+          end
+        \{% end %}
         \{% for name, type in FIELDS %}
           if \{{type.id}}.is_a? Mongo::ORM::EmbeddedDocument.class
             model.\{{name.id}} = \{{type.id}}.from_bson(bson["\{{name}}"])
@@ -38,6 +49,16 @@ module Mongo::ORM::Querying
         \{% for name, type in FIELDS %}
           bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
         \{% end %}
+        \{% for name, type in SPECIAL_FIELDS %}
+          arr : BSON = BSON.new
+          appender : BSON::ArrayAppender = BSON::ArrayAppender.new(arr)
+          if self.\{{name.id}} != nil
+            self.\{{name}}.each do |item|
+              appender << item.to_bson if item
+            end
+          end
+          bson["\{{name}}"] = arr
+        \{% end %}
         \{% if SETTINGS[:timestamps] %}
           bson["created_at"] = created_at.as(Union(Time | Nil))
           bson["updated_at"] = updated_at.as(Union(Time | Nil))
@@ -57,7 +78,7 @@ module Mongo::ORM::Querying
   def all(query = BSON.new, skip = 0, limit = 0, batch_size = 0, flags = LibMongoC::QueryFlags::NONE, prefs = nil)
     rows = [] of self
     collection.find(query, BSON.new, flags, skip, limit, batch_size, prefs).each do |doc|
-      rows << from_bson(doc)
+      rows << from_bson(doc) if doc
     end
     rows
   end
