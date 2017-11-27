@@ -31,6 +31,7 @@ class TestAdmin < Mongo::ORM::Document
   field age : Int32
   embeds blog : TestBlog
   has_many :test_posts
+  embeds_many :test_inner_things
 
   timestamps
 end
