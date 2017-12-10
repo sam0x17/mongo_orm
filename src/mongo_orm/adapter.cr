@@ -10,6 +10,7 @@ class Mongo::ORM::Adapter
     database_name : String = "mongo_orm_db"
     if ENV["DATABASE_URL"]?
       database_url = ENV["DATABASE_URL"]
+      database_name = ENV["DATABASE_NAME"] if ENV["DATABASE_NAME"]
     elsif File.exists?(DATABASE_YML)
       yaml = YAML.parse(File.read DATABASE_YML)
       database_url = yaml["database_url"].to_s if yaml["database_url"]?
