@@ -24,9 +24,9 @@ make -j4 || exit 1
 sudo make install -j4 || exit 1
 ```
 
-Next, add the following to the `shards.yml` file in your project and run `shards install`:
+Next, add the following to the `shard.yml` file in your project and run `shards install`:
 ```yml
-# shards.yml
+# shard.yml
 dependencies:
   mongo-orm:
     github: sam0x17/crystal-mongo-orm
