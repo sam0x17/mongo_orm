@@ -8,9 +8,11 @@ but can be used with vanilla crystal or any web framework.
 Suggestions, feature requests, bug fixes, and pull requests are always welcome.
 
 ## Installation
-First you will need to install MongoDB, as well as the dependencies for [Mongo.cr](https://github.com/datanoise/mongo.cr).
-On Linux, this can be done by running the following bash script from the root of your
-crystal project directory or from `/tmp` (untested).
+First you will need to [install MongoDB](https://docs.mongodb.com/v3.4/administration/install-community/)
+(unless you are running a remote server), as well as the dependencies for
+[Mongo.cr](https://github.com/datanoise/mongo.cr). On Linux, this can be done by running
+the following bash script from the root of your crystal project directory or from
+`/tmp` (untested).
 
 ```bash
 # install_linux_deps.sh
