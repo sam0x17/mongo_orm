@@ -5,6 +5,8 @@ and provides basic querying, associations, and model lifecycle capabilities. Mon
 is intended to be used with the [Amber Framework](https://github.com/amberframework/amber),
 but can be used with vanilla crystal or any web framework.
 
+Suggestions, feature requests, bug fixes, and pull requests are always welcome.
+
 ## Installation
 First you will need to install MongoDB, as well as the dependencies for [Mongo.cr](https://github.com/datanoise/mongo.cr).
 On Linux, this can be done by running the following bash script from the root of your
