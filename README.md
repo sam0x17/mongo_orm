@@ -61,4 +61,63 @@ database_name: my_db
 ```
 
 ## Mongo ORM Reference
-WIP
+
+### Defining Standard Models
+MongoDB is different from conventional relational database systems mainly because there
+is no set-in-stone schema, but instead a "wilderness" of BSON-based "documents" that
+may or may not roughly follow the same schema. Declaring a model works much the same
+as it does in Granite ORM:
+
+```crystal
+class User < Mongo::ORM::Document
+  field name : String
+  field age : Int32
+  field deleted_at : Time
+  field turned_on : Bool
+  timestamps
+end
+```
+
+This will declare a model called `User` with a string field called `name`, a 32-bit
+integer field called `age`, a Time field called `deleted_at`, a boolean field called
+`turned_on`, and the standard `created_at` and `updated_at` fields you will recognize
+from Rails that are created because we specified `timestamps`.
+
+Note: all Time fields are presently locked into UTC because of some conversion bugs
+that arise when changing time zones and converting between BSON and crystal models.
+
+To instantiate a `User` and save it to the database, you can do:
+
+```crystal
+user = User.new
+user.name = "Sam"
+user.age = 248
+user.turned_on = true
+user.save!
+puts user.inspect # print the created user
+puts "id: #{user._id}" # print the ID of the created user
+```
+Note that the `ID` field is named `_id`, as in standard MongoDB.
+
+You can also use the more compact `create` notation:
+
+```crystal
+user = User.create name: "Sam", age: 248, turned_on: true
+```
+
+### Model Associations
+Currently, you can define `has_many` associations directly on a model, and they will
+behave roughly the same way they would in standard Rails. For example:
+
+```crystal
+class Group < Mongo::ORM::Document
+  field name : String
+  has_many :users
+end
+```
+This defines another model called `Group`. A group has a String field `name`, and
+has an ID-based collection of `User` documents called `users` which can be accessed
+via `group.users` where `group` is an instance of `Group`. To make a `User` a member
+of a `Group`, `user.group_id` can be set to the document ID of an already-created
+`Group`. Note that when you specify that model A `has_many` model B, the `b.a_id` field
+is also automatically created.
