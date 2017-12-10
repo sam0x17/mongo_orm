@@ -1,37 +1,33 @@
-# mongo-orm
-
-TODO: Write a description here
+# Mongo ORM
+This shard provides a basic ORM for using MongoDB wth the Crystal programming language.
+Mongo ORM is based on [Granite ORM](https://github.com/amberframework/granite-orm),
+and provides basic querying, associations, and model lifecycle capabilities. Mongo ORM
+is intended to be used with the [Amber Framework](https://github.com/amberframework/amber),
+but can be used with vanilla crystal or any web framework.
 
 ## Installation
+First you will need to install MongoDB, as well as the dependencies for [Mongo.cr](https://github.com/datanoise/mongo.cr).
+On Linux, this can be done by running the following bash script from the root of your
+crystal project directory or from `/tmp` (untested).
 
-Add this to your application's `shard.yml`:
+```bash
+# install_linux_deps.sh
+#!/bin/bash
+mkdir -p lib || exit 1
+cd lib || exit 1
+wget https://github.com/mongodb/mongo-c-driver/releases/download/1.1.0/mongo-c-driver-1.1.0.tar.gz || exit 1
+tar -zxvf mongo-c-driver-1.1.0.tar.gz && cd mongo-c-driver-1.1.0/ || exit 1
+./configure --prefix=/usr --libdir=/usr/lib || exit 1
+make -j4 || exit 1
+sudo make install -j4 || exit 1
+```
 
-```yaml
+Next, add the following to the `shards.yml` file in your project and run `shards install`:
+```yml
 dependencies:
   mongo-orm:
-    github: [your-github-name]/mongo-orm
+    github: sam0x17/crystal-mongo-orm
 ```
 
-## Usage
-
-```crystal
-require "mongo-orm"
-```
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[your-github-name]/mongo-orm/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create a new Pull Request
-
-## Contributors
-
-- [[your-github-name]](https://github.com/[your-github-name]) Sam Johnson - creator, maintainer
+## Mongo ORM Reference
+WIP
