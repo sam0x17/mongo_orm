@@ -29,5 +29,31 @@ dependencies:
     github: sam0x17/crystal-mongo-orm
 ```
 
+## Establishing MongoDB Connection
+By default (with zero configuration), Mongo ORM will attempt to connect to a database
+running at `localhost:27017` which is the default MongoDB port, with the database
+name `monogo_orm_db`.
+
+### Using Environment Variables
+If the environment variable `DATABASE_URL` is present, Mongo ORM will connect using
+this variable instead. You can also specify the database name using the `DATABASE_NAME`
+environment variable. For example:
+
+```
+$ DATABASE_URL=mongodb://localhost:11771;DATABASE_NAME=my_db crystal .
+```
+
+### Using a YAML Configuration File
+If the `DATABASE_URL` environment variable is not present, Mongo ORM will look for the
+file `config/database.yml` within your project directory. If the file exists, Mongo
+ORM will expect the following format (specify the keys `database_url` and
+`database_name`):
+
+```yaml
+# config/database.yml
+database_url: mongodb://localhost:11771
+database_name: my_db
+```
+
 ## Mongo ORM Reference
 WIP
