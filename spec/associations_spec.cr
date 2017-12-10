@@ -15,6 +15,7 @@ describe Mongo::ORM::Document do
       post.test_admin.equals?(a).should be_true
       a.test_posts.inspect.should eq [post].inspect
       a.test_posts.first.not_nil!.test_admin.equals?(a).should be_true
+      post.test_admin_id = a._id
     end
 
     it "handles embeds_many relationships" do
