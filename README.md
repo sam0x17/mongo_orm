@@ -121,3 +121,25 @@ via `group.users` where `group` is an instance of `Group`. To make a `User` a me
 of a `Group`, `user.group_id` can be set to the document ID of an already-created
 `Group`. Note that when you specify that model A `has_many` model B, the `b.a_id` field
 is also automatically created.
+
+### Embedded Documents
+In addition to conventional table-style models/documents, Mongo ORM supports the
+ability to embed documents or collections of documents within documents, as per the
+BSON standard. This is sometimes a more convenient or more efficient alternative
+to spreading data out across multiple document collections and fully leverages
+the document-based nature of MongoDB. See the example below:
+
+```crystal
+class Topic < Mongo::ORM::Document
+  embeds top_comment : Comment # e.g. topic.top_comment.body
+end
+
+class Tag < Mongo::ORM::EmbeddedDocument
+  field topic : String
+end
+
+class Comment < Mongo::ORM::EmbeddedDocument
+  field body : String
+  embeds_many :tags # e.g. comment.tags[0]
+end
+```
