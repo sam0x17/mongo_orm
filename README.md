@@ -127,7 +127,8 @@ In addition to conventional table-style models/documents, Mongo ORM supports the
 ability to embed documents or collections of documents within documents, as per the
 BSON standard. This is sometimes a more convenient or more efficient alternative
 to spreading data out across multiple document collections and fully leverages
-the document-based nature of MongoDB. See the example below:
+the document-based nature of MongoDB. Note that you can also nest embedded documents.
+See the example below:
 
 ```crystal
 class Topic < Mongo::ORM::Document
