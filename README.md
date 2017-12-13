@@ -126,7 +126,7 @@ is also automatically created.
 In addition to conventional table-style models/documents, Mongo ORM supports the
 ability to embed documents or collections of documents within documents, as per the
 BSON standard. This is sometimes a more convenient or more efficient alternative
-to spreading data out across multiple document collections and fully leverages
+to spreading data out across multiple document collections (tables) and fully leverages
 the document-based nature of MongoDB. Note that you can also nest embedded documents.
 See the example below:
 
