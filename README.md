@@ -45,7 +45,7 @@ this variable instead. You can also specify the database name using the `DATABAS
 environment variable. For example:
 
 ```
-$ DATABASE_URL=mongodb://localhost:11771;DATABASE_NAME=my_db crystal .
+$ DATABASE_URL=mongodb://localhost:11771;DATABASE_NAME=my_db crystal app.cr
 ```
 
 ### Using a YAML Configuration File
