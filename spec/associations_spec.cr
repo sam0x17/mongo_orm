@@ -40,5 +40,16 @@ describe Mongo::ORM::Document do
       after = admin.test_inner_things.to_bson.to_s
       after.should eq before
     end
+
+    it "persists single embedded documents" do
+      a = TestAdmin.new
+      a.first_name = "Sam"
+      a.blog = TestBlog.new
+      a.blog.not_nil!.name = "test blog"
+      a.save!
+      a = TestAdmin.first.not_nil!
+      a.first_name.should eq "Sam"
+      a.blog.not_nil!.name.should eq "test blog"
+    end
   end
 end

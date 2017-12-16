@@ -4,13 +4,15 @@ class BSON
   end
 end
 
-module Mongo::ORM::EmbeddedBson
+module Mongo::ORM::EmbeddedBSON
   macro extended
     macro __process_embedded_bson
 
       def self.from_bson(bson : BSON)
         model = \{{@type.name.id}}.new
+        fields = {} of String => Bool
         \{% for name, type in FIELDS %}
+          fields["\{{name.id}}"] = true
           if \{{type.id}}.is_a? Mongo::ORM::EmbeddedDocument.class
             model.\{{name.id}} = \{{type.id}}.from_bson(bson["\{{name}}"])
           else
@@ -20,6 +22,10 @@ module Mongo::ORM::EmbeddedBson
             model.\{{name.id}} = model.\{{name.id}}.not_nil!.to_utc if model.\{{name.id}}
           \{% end %}
         \{% end %}
+        bson.each_key do |key|
+          next if fields.has_key?(key)
+          model.set_extended_value(key, bson[key])
+        end
         model
       end
 
@@ -28,6 +34,9 @@ module Mongo::ORM::EmbeddedBson
         \{% for name, type in FIELDS %}
           bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
         \{% end %}
+        extended_bson.each_key do |key|
+          bson[key] = extended_bson[key] unless bson.has_key?(key)
+        end
         bson
       end
     end

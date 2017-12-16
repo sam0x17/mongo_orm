@@ -1,11 +1,13 @@
 require "./embedded_fields"
 require "./associations"
 require "./embedded_bson"
+require "./extended_bson"
 
 class Mongo::ORM::EmbeddedDocument
   include EmbeddedFields
   include Associations
-  extend EmbeddedBson
+  include ExtendedBSON
+  extend EmbeddedBSON
 
   def equals?(val : Document)
     self.to_h.to_s == val.to_h.to_s

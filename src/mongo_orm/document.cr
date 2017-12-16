@@ -9,6 +9,7 @@ require "./validators"
 require "./version"
 require "./associations"
 require "./embedded_document"
+require "./extended_bson"
 
 struct BSON::ObjectId # ObjectId.inspect should just display id
   def inspect(io)
@@ -32,6 +33,7 @@ class Mongo::ORM::Document
   include Collection
   include Persistence
   include Validators
+  include ExtendedBSON
 
   extend Querying
 

@@ -13,7 +13,9 @@ module Mongo::ORM::Querying
       def self.from_bson(bson : BSON)
         model = \{{@type.name.id}}.new
         model._id = bson["_id"].as(BSON::ObjectId) if bson["_id"]?
+        fields = {} of String => Bool
         \{% for name, type in SPECIAL_FIELDS %}
+          fields["\{{name.id}}"] = true
           model.\{{name.id}} = [] of \{{type.id}}
           if bson.has_key?("\{{name}}")
             bson["\{{name}}"].not_nil!.as(BSON).each do |item|
@@ -25,6 +27,7 @@ module Mongo::ORM::Querying
           end
         \{% end %}
         \{% for name, type in FIELDS %}
+          fields["\{{name.id}}"] = true
           if \{{type.id}}.is_a? Mongo::ORM::EmbeddedDocument.class
             model.\{{name.id}} = \{{type.id}}.from_bson(bson["\{{name}}"])
           else
@@ -40,6 +43,10 @@ module Mongo::ORM::Querying
           model.created_at = model.created_at.not_nil!.to_utc if model.created_at
           model.updated_at = model.updated_at.not_nil!.to_utc if model.updated_at
         \{% end %}
+        bson.each_key do |key|
+          next if fields.has_key?(key)
+          model.set_extended_value(key, bson[key])
+        end
         model
       end
 
@@ -63,6 +70,9 @@ module Mongo::ORM::Querying
           bson["created_at"] = created_at.as(Union(Time | Nil))
           bson["updated_at"] = updated_at.as(Union(Time | Nil))
         \{% end %}
+        extended_bson.each_key do |key|
+          bson[key] = extended_bson[key] unless bson.has_key?(key)
+        end
         bson
       end
     end
