@@ -4,7 +4,8 @@ describe Mongo::ORM::Document do
   describe "BSON support" do
     it "does not allow referencing undefined extended bson attributes" do
       a = TestAdmin.new
-      expect_raises { a.asdf }
+      a.asdf.should eq nil
+      expect_raises { a.asdf! }
     end
 
     it "allows defining new extended bson attributes" do
