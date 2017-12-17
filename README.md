@@ -62,11 +62,11 @@ database_name: my_db
 
 ## Mongo ORM Reference
 
-### Defining Standard Models
+### Static Fields
 MongoDB is different from conventional relational database systems mainly because there
-is no set-in-stone schema, but instead a "wilderness" of BSON-based "documents" that
-may or may not roughly follow the same schema. Declaring a model works much the same
-as it does in Granite ORM:
+is no set-in-stone schema, but instead a wilderness of BSON-based "documents" that
+may or may not roughly follow the same schema. Declaring static fields works much the
+same as it does in Granite ORM:
 
 ```crystal
 class User < Mongo::ORM::Document
@@ -144,3 +144,35 @@ class Comment < Mongo::ORM::EmbeddedDocument
   embeds_many :tags # e.g. comment.tags[0]
 end
 ```
+
+### Extended Fields
+Mongo ORM also allows you to make use of document fields that are not specified
+explicitly in the model schema. In fact, it is possible to use Mongo ORM without
+specifying any model schema at all, however we have provided both options, as schemas
+provide sane defaults, type checking, and consistency, whereas extended fields (our
+name for fields not specified in a model schema) make it easy to do dynamic things
+that would be difficult or impossible in traditional relational databases, and require
+zero configuration.
+
+For example, suppose you have an `Admin` collection in your database, and that some
+(but not all) `Admin` documents have a field called `alias`:
+
+```crystal
+admin = Admin.find(4)
+puts admin.alias
+```
+If the document does indeed have a field named `alias`, then this will print
+its value. If such a field is not defined, then `nil` (nothing) will be printed. This
+will also work on nested documents, for example `blog.header.tag` where `blog` is a
+`Blog` document and `header` is a `Header` embedded document.
+
+If you know for a fact that `alias` should be defined on this particular document,
+you can use the following syntax to be more explicit:
+
+```crystal
+admin = Admin.find(4)
+puts admin.alias!
+```
+
+The `!` syntax will cause an error to be thrown (undefined method) in the event that
+the `alias` field is not defined.
