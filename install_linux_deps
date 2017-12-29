@@ -1,3 +1,4 @@
+sudo apt-get install libxml2-dev build-essential
 pwd=`pwd` || exit 1
 mkdir -p lib || exit 1
 cd lib || exit 1
