@@ -5,7 +5,7 @@ describe Mongo::ORM::Document do
     it "does not allow referencing undefined extended bson attributes" do
       a = TestAdmin.new
       a.asdf.should eq nil
-      expect_raises { a.asdf! }
+      expect_raises(Exception) { a.asdf! }
     end
 
     it "allows defining new extended bson attributes" do
