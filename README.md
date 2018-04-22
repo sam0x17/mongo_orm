@@ -26,6 +26,20 @@ make -j4 || exit 1
 sudo make install -j4 || exit 1
 ```
 
+##### MacOS installation
+You can just run `./install_macos_deps`
+
+```bash
+#!/bin/bash
+curl -LO https://github.com/mongodb/mongo-c-driver/releases/download/1.9.4/mongo-c-driver-1.9.4.tar.gz || exist 1
+tar xzf mongo-c-driver-1.9.4.tar.gz || exist 1
+cd mongo-c-driver-1.9.4 || exist 1
+./configure || exist 1
+make || exist 1
+sudo make install || exist 1
+```
+
+
 Next, add the following to the `shard.yml` file in your project and run `shards install`:
 ```yml
 # shard.yml
