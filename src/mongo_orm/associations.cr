@@ -18,6 +18,24 @@ module Mongo::ORM::Associations
     end
   end
 
+  macro belongs_to(model_name, class_name = nil)
+    field {{class_name.id.underscore}}_id : BSON::ObjectId
+
+    # retrieve the parent relationship
+    def {{model_name.id}}
+      if parent = {{class_name.id}}.find {{class_name.id.underscore}}_id
+        parent
+      else
+        {{class_name.id}}.new
+      end
+    end
+
+    # set the parent relationship
+    def {{model_name.id}}=(parent)
+      @{{class_name.id.underscore}}_id = parent._id
+    end
+  end
+
   macro has_many(children_collection)
     def {{children_collection.id}}
       {% children_class = children_collection.id[0...-1].camelcase %}
