@@ -19,7 +19,7 @@ describe Mongo::ORM::Document do
     end
 
     it "handles has_many <=> belongs_to relationships as class" do
-      a = TestModuleAdmin.new
+      a = TestModule::TestModuleAdmin.new
       a.test_posters.should eq [] of TestPoster
       a.save
       post = TestPoster.new
@@ -27,7 +27,7 @@ describe Mongo::ORM::Document do
       post.test_admin = a
       post.save
       post = TestPoster.all.first.not_nil!
-      a = TestModuleAdmin.all.first.not_nil!
+      a = TestModule::TestModuleAdmin.all.first.not_nil!
       post.test_admin.equals?(a).should be_true
       a.test_posters.inspect.should eq [post].inspect
       a.test_posters.first.not_nil!.test_admin.equals?(a).should be_true
