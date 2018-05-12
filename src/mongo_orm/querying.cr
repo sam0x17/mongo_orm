@@ -57,14 +57,16 @@ module Mongo::ORM::Querying
           bson["\{{name}}"] = \{{name.id}}.as(Union(\{{type.id}} | Nil))
         \{% end %}
         \{% for name, type in SPECIAL_FIELDS %}
-          arr : BSON = BSON.new
-          appender : BSON::ArrayAppender = BSON::ArrayAppender.new(arr)
+          \{% arr = "arr_#{name.id}" %}
+          \{% appender = "appender_#{name.id}" %}
+          \{{arr.id}} : BSON = BSON.new
+          \{{appender.id}} : BSON::ArrayAppender = BSON::ArrayAppender.new(\{{arr.id}})
           if self.\{{name.id}} != nil
             self.\{{name}}.each do |item|
-              appender << item.to_bson if item
+              \{{appender.id}} << item.to_bson if item
             end
           end
-          bson["\{{name}}"] = arr
+          bson["\{{name}}"] = \{{arr.id}}
         \{% end %}
         \{% if SETTINGS[:timestamps] %}
           bson["created_at"] = created_at.as(Union(Time | Nil))

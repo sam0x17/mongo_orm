@@ -32,6 +32,7 @@ class TestAdmin < Mongo::ORM::Document
   embeds blog : TestBlog
   has_many :test_posts
   embeds_many :test_inner_things
+  embeds_many :test_inner_things_modules, class_name: TestModule::Embed
 
   timestamps
 end
@@ -56,8 +57,10 @@ module TestModule
 
   class Permission < Mongo::ORM::Document
     field name : String
-    field val : Int32
     belongs_to :admin, class_name: TestModule::Admin
+  end
+  class Embed < Mongo::ORM::EmbeddedDocument
+    field name : String
   end
 end
 

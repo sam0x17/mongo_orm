@@ -21,8 +21,8 @@ module Mongo::ORM::Fields
     raise "can only embed classes inheriting from Mongo::ORM::EmbeddedDocument" unless {{decl.type}}.new.is_a?(Mongo::ORM::EmbeddedDocument)
   end
 
-  macro embeds_many(children_collection)
-    {% children_class = children_collection.id[0...-1].camelcase %}
+  macro embeds_many(children_collection, class_name=nil)
+    {% children_class = class_name ? class_name.id : children_collection.id[0...-1].camelcase %}
     {% children_array_class = "Array(#{children_class})" %}
     @{{children_collection.id}} = [] of {{children_class}}
     def {{children_collection.id}}
