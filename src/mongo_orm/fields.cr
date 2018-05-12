@@ -153,7 +153,7 @@ module Mongo::ORM::Fields
         when "{{_name.id}}"
           return @{{_name.id}} = nil if value.nil?
           {% if type.id == BSON::ObjectId.id %}
-            @{{_name.id}} = BSON::ObjectId.new value
+            @{{_name.id}} = BSON::ObjectId.new value.to_s
           {% elsif type.id == Int32.id %}
             @{{_name.id}} = value.is_a?(String) ? value.to_i32 : value.is_a?(Int64) ? value.to_s.to_i32 : value.as(Int32)
           {% elsif type.id == Int64.id %}
