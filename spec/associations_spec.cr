@@ -19,7 +19,7 @@ describe Mongo::ORM::Document do
     end
 
     it "handles has_many <=> belongs_to relationships as class" do
-      a = TestModule::TestModuleAdmin.new
+      a = TestModule::Admin.new
       a.test_posters.should eq [] of TestPoster
       a.save
       post = TestPoster.new
@@ -27,11 +27,26 @@ describe Mongo::ORM::Document do
       post.test_admin = a
       post.save
       post = TestPoster.all.first.not_nil!
-      a = TestModule::TestModuleAdmin.all.first.not_nil!
+      a = TestModule::Admin.all.first.not_nil!
       post.test_admin.equals?(a).should be_true
       a.test_posters.inspect.should eq [post].inspect
       a.test_posters.first.not_nil!.test_admin.equals?(a).should be_true
       post.test_admin_id = a._id
+    end
+
+    it "handles has_many <=> belongs_to relationships as class" do
+      a = TestModule::Admin.new
+      a.save
+      p = TestModule::Permission.new
+      p.name = "test"
+      p.val = 1
+      p.admin = a
+      p.save
+      
+      
+      p.admin.equals?(a).should be_true
+      a.permissions.size.should eq 1
+      a.permissions[0].id.should eq p._id
     end
 
     it "handles embeds_many relationships" do
