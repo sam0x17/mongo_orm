@@ -96,7 +96,7 @@ may or may not roughly follow the same schema. Declaring static fields works muc
 same as it does in Granite ORM:
 
 ```crystal
-require "mongo-orm/src/mongo_orm"
+require "mongo_orm"
 
 class User < Mongo::ORM::Document
   field name : String
