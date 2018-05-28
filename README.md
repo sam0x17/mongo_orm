@@ -31,12 +31,12 @@ You can just run `./install_macos_deps`
 
 ```bash
 #!/bin/bash
-curl -LO https://github.com/mongodb/mongo-c-driver/releases/download/1.9.4/mongo-c-driver-1.9.4.tar.gz || exist 1
-tar xzf mongo-c-driver-1.9.4.tar.gz || exist 1
-cd mongo-c-driver-1.9.4 || exist 1
-./configure || exist 1
-make || exist 1
-sudo make install || exist 1
+curl -LO https://github.com/mongodb/mongo-c-driver/releases/download/1.9.4/mongo-c-driver-1.9.4.tar.gz || exit 1
+tar xzf mongo-c-driver-1.9.4.tar.gz || exit 1
+cd mongo-c-driver-1.9.4 || exit 1
+./configure || exit 1
+make || exit 1
+sudo make install || exit 1
 ```
 
 
