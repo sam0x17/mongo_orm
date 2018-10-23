@@ -4,12 +4,10 @@ version: 0.1.1
 authors:
   - Sam Johnson <sam@durosoft.com>
 
-crystal: 0.24.2
+crystal: 0.26.1
 
 license: MIT
 
 dependencies:
   mongo:
-    github: sam0x17/mongo.cr
-    commit: e14488246b5c0d9e5f1a3ca4c257936110044b43 # branch 0.25.1
-
+    github: datanoise/mongo.cr
