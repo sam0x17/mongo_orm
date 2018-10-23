@@ -10,9 +10,9 @@ Suggestions, feature requests, bug fixes, and pull requests are always welcome.
 ## Installation
 First you will need to [install MongoDB](https://docs.mongodb.com/v3.4/administration/install-community/)
 (unless you are running a remote server), as well as the dependencies for
-[Mongo.cr](https://github.com/datanoise/mongo.cr). On Ubuntu and possibly other linux distros, this can be
-done by running the following bash script from the root of your crystal project directory or wherever
-you want to create your mongo-c-driver installation.
+[Mongo.cr](https://github.com/datanoise/mongo.cr). On Arch Linux and Ubuntu,
+this can be done using your package manager as shown below. For other linux distrubutions, you may be able
+to use the script shown below.
 
 #### Arch Linux:
 
@@ -23,7 +23,14 @@ $ sudo pacman -Syu libbson mongodb
 $ sudo systemctl start mongodb
 ```
 
-#### Ubuntu / Other Linux:
+#### Ubuntu
+
+```
+sudo apt update
+sudo apt install sudo apt install libmongoc-dev libmongoc-1.0-0 libmongoclient-dev
+```
+
+#### Other Linux:
 
 Simply run `./install_linux_deps`, the contents of which are shown below:
 
