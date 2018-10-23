@@ -25,6 +25,8 @@ $ sudo systemctl start mongodb
 
 #### Ubuntu
 
+Simply run:
+
 ```
 sudo apt update
 sudo apt install sudo apt install libmongoc-dev libmongoc-1.0-0 libmongoclient-dev
