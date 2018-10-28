@@ -66,8 +66,8 @@ Next, add the following to the `shard.yml` file in your project and run `shards 
 ```yml
 # shard.yml
 dependencies:
-  mongo-orm:
-    github: sam0x17/crystal-mongo-orm
+  mongo_orm:
+    github: sam0x17/mongo_orm
 ```
 
 ## Establishing MongoDB Connection
