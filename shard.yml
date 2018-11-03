@@ -10,4 +10,4 @@ license: MIT
 
 dependencies:
   mongo:
-    github: datanoise/mongo.cr
+    github: sam0x17/mongo.cr
