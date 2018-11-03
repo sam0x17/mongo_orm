@@ -1,0 +1,6 @@
+version: 1.0
+shards:
+  mongo:
+    github: sam0x17/mongo.cr
+    commit: 8b802a4e9e5373b300375c966c22a62199bbdf2d
+
