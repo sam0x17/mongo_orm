@@ -116,12 +116,12 @@ module Mongo::ORM::Fields
 
     def to_json(json : JSON::Builder)
       json.object do
-        json.field "{{PRIMARY[:name]}}", {{PRIMARY[:name]}}
+        json.field "{{PRIMARY[:name]}}", {{PRIMARY[:name]}} ? {{PRIMARY[:name]}}.to_s : nil
 
         {% for name, type in FIELDS %}
           %field, %value = "{{name.id}}", {{name.id}}
           {% if type.id == Time.id %}
-            json.field %field, %value.try(&.to_s(%F %X))
+            json.field %field, %value.to_s
           {% elsif type.id == Slice.id %}
             json.field %field, %value.id.try(&.to_s(""))
           {% else %}
@@ -130,9 +130,33 @@ module Mongo::ORM::Fields
         {% end %}
 
         {% if SETTINGS[:timestamps] %}
-          json.field "created_at", created_at.try(&.to_s("%F %X"))
-          json.field "updated_at", updated_at.try(&.to_s("%F %X"))
+          json.field "created_at", created_at.to_s
+          json.field "updated_at", updated_at.to_s
         {% end %}
+      end
+    end
+
+    def to_json
+      JSON.build do |json|
+        json.object do
+          json.field "{{PRIMARY[:name]}}", {{PRIMARY[:name]}} ? {{PRIMARY[:name]}}.to_s : nil
+
+          {% for name, type in FIELDS %}
+            %field, %value = "{{name.id}}", {{name.id}}
+            {% if type.id == Time.id %}
+              json.field %field, %value.to_s
+            {% elsif type.id == Slice.id %}
+              json.field %field, %value.id.try(&.to_s(""))
+            {% else %}
+              json.field %field, %value
+            {% end %}
+          {% end %}
+  
+          {% if SETTINGS[:timestamps] %}
+            json.field "created_at", created_at.to_s
+            json.field "updated_at", updated_at.to_s
+          {% end %}
+        end
       end
     end
 

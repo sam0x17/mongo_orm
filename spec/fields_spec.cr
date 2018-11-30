@@ -55,5 +55,10 @@ describe Mongo::ORM::Document do
       u.stupid = true
       u.stupid.should eq true
     end
+
+    it "can do to_json properly" do
+      u = TestUser.new
+      u.to_json.should eq "{\"_id\":null,\"name\":null,\"age\":null,\"identifier\":null,\"deleted_at\":\"\",\"stupid\":null,\"created_at\":\"\",\"updated_at\":\"\"}"
+    end
   end
 end
