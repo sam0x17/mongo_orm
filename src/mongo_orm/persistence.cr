@@ -12,13 +12,13 @@ module Mongo::ORM::Persistence
         __run_before_save
         if _id
           __run_before_update
-          @updated_at = Time.now.to_utc
+          @updated_at = Time.utc
           @@collection.save(self)
           __run_after_update
         else
           __run_before_create
-          @created_at = Time.now.to_utc
-          @updated_at = Time.now.to_utc
+          @created_at = Time.utc
+          @updated_at = Time.utc
           self._id = BSON::ObjectId.new
           @@collection.save(self)
           __run_after_create
